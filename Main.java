@@ -3,8 +3,8 @@ import java.util.Scanner;
 public class Main
 {
 	public static void main(String[] args) {
-	Arvore tree = new Arvore();
-    tree.inserir("", "");
+Arvore tree = new Arvore();
+    tree.inserir(" ", " ");
    /* tree.inserir("a", ".-");
     tree.inserir("b", "-...");
     tree.inserir("c", "-.-.");
@@ -43,7 +43,6 @@ public class Main
     tree.inserir("7", "--...");
     tree.inserir("8", "---..");
     tree.inserir("9", "----.");*/
-    tree.inserir(" ", "/");
 	 Scanner scanner = new Scanner(System.in);
         int choice;
 
@@ -54,6 +53,7 @@ public class Main
             System.out.println("1 - adicionar um caracter a arvore");
             System.out.println("2 - buscar o valor em morse de um caracter");
             System.out.println("3 - Imprimir arvore");
+            System.out.println("4 - Converter uma mensagem para morse");
             System.out.println("-----------------------------------------------------------------");
             System.out.print("0 - sair: ");
             
@@ -84,6 +84,11 @@ public class Main
                 case 3:
                     tree.print();
                     break;
+                case 4:
+                    System.out.println("Digite a mensagem desejada:");
+                    String msg_input = scanner.nextLine();
+                    tree.converte_mensagem(msg_input);
+                    break;
                 case 0:
                     System.exit(0);
                 default:
@@ -95,8 +100,7 @@ public class Main
         scanner.close();
 	}
 	
-	
-	}
+}
 
 class Node{
     String letra;
@@ -118,18 +122,20 @@ class Arvore{
     }
     
     void inserir(String letra, String morse){
-        this.raiz = inserir_aux(this.raiz, letra, morse);
+        this.raiz = inserir_aux(this.raiz, letra, morse, 0);
     }
-    Node inserir_aux(Node raiz, String letra, String morse){
-        if(raiz == null){
+    Node inserir_aux(Node raiz, String letra, String morse, int index) {
+        if (raiz == null) {
             raiz = new Node(letra, morse);
             return raiz;
         }
-        else if(morse.compareTo(raiz.morse) < 0){
-            raiz.menor = inserir_aux(raiz.menor, letra, morse);
-        }
-        else{
-            raiz.maior = inserir_aux(raiz.maior, letra, morse);
+        if (index < morse.length()) {
+            char caracterAtual = morse.charAt(index);
+            if (caracterAtual == '.') {
+                raiz.menor = inserir_aux(raiz.menor, letra, morse, index + 1);
+            } else if (caracterAtual == '-') {
+                raiz.maior = inserir_aux(raiz.maior, letra, morse, index + 1);
+            }
         }
         return raiz;
     }
@@ -171,7 +177,7 @@ class Arvore{
         for (int i=0; i < m.length(); i++) {
             String p = String.valueOf(m.charAt(i));
             String aux = this.busca(p);
-            msg = msg + aux + " ";
+            msg = msg + aux;
         }
         System.out.println(msg);
     }
